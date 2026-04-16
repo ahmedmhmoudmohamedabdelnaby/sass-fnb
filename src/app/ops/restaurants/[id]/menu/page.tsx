@@ -87,8 +87,8 @@ export default async function OpsMenuEditorPage({
               <table className="w-full text-left text-sm">
                 <tbody>
                   {cat.menu_items
-                    .sort((a, b) => a.order_idx - b.order_idx)
-                    .map((item) => (
+                    .sort((a: any, b: any) => a.order_idx - b.order_idx)
+                    .map((item: any) => (
                     <tr key={item.id} className="border-b last:border-0 hover:bg-gray-50">
                       <td className="p-4 font-medium">{item.name}</td>
                       <td className="p-4 text-gray-500 max-w-sm truncate">{item.description}</td>
