@@ -1,0 +1,22 @@
+# Execution Tasks
+
+- `[x]` 1. **Project Initialization**
+  - `[x]` Scaffold Next.js 14 application with Tailwind CSS and TypeScript.
+  - `[x]` Configure required dependencies (Supabase JS, Upstash Redis, styling utilities).
+- `[/]` 2. **Database Initialization & Schemas**
+  - `[ ]` Formulate and execute PostgreSQL migrations (Tables: `restaurants`, `categories`, `menu_items`, `variants`, `addons`, etc.).
+  - `[ ]` Create specific Advanced Order System tables (`orders`, `order_items`, `delivery_tracking`).
+  - `[ ]` Establish Role-Based Access Control and RLS policies.
+  - `[ ]` Implement robust RPC stored procedures for safe atomic creations.
+- `[ ]` 3. **Application Foundations**
+  - `[ ]` Set up comprehensive Server Actions framework.
+  - `[ ]` Build out Theme abstraction (`themes` static mapping).
+  - `[ ]` Scaffold out `/[slug]` dynamic routing core logic.
+- `[ ]` 4. **Order Pipeline & Realtime Kitchen**
+  - `[ ]` Design isolated POS logic logic preserving historical snapshots.
+  - `[ ]` Scaffold `/r/kitchen` dashboard with Supabase Realtime subscriptions.
+- `[ ]` 5. **Analytics Engine Implementation**
+  - `[ ]` Integrate Upstash Redis for analytics rate-limiting wrapper.
+- `[ ]` 6. **Verification & Polish**
+  - `[ ]` Execute E2E walkthroughs of order generation.
+  - `[ ]` Ensure strict <2s load guarantees.
