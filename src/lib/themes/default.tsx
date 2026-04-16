@@ -2,29 +2,79 @@ import React from 'react';
 
 export default function DefaultTheme({ data }: { data: any }) {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans p-6">
-      <header className="max-w-3xl mx-auto rounded-lg bg-white shadow p-8 text-center border-b-[8px] border-black">
-        <h1 className="text-4xl font-extrabold tracking-tight">{data.name}</h1>
-        <p className="mt-2 text-sm text-gray-500 uppercase tracking-widest text-[#000]">Welcome to our default menu experience.</p>
-      </header>
+    <div className="min-h-screen bg-white text-gray-900 font-sans selection:bg-gray-100">
+      {/* Optional Cover Image Banner */}
+      {data.coverUrl && (
+        <div className="w-full h-48 md:h-64 lg:h-80 relative bg-gray-100">
+          <img 
+            src={data.coverUrl} 
+            alt={`${data.name} Cover`} 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+        </div>
+      )}
 
-      <main className="max-w-3xl mx-auto mt-8 space-y-12">
-        {data.categories?.map((cat: any) => (
-          <section key={cat.id} className="space-y-4">
-            <h2 className="text-2xl font-bold border-b pb-2">{cat.name}</h2>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {cat.items?.map((item: any) => (
-                <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-lg">{item.name}</h3>
-                    <span className="font-medium bg-black text-white px-2 py-1 rounded-md text-sm">${item.price}</span>
+      <main className="max-w-3xl mx-auto px-6 py-12 md:py-16">
+        
+        {/* Header */}
+        <header className="mb-12 border-b border-gray-100 pb-8">
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
+            {data.name}
+          </h1>
+          <p className="mt-3 text-lg text-gray-500">
+            Welcome to our digital menu.
+          </p>
+        </header>
+
+        {/* Categories */}
+        <div className="space-y-16">
+          {data.categories?.map((cat: any) => (
+            <section key={cat.id} className="space-y-6">
+              
+              <h2 className="text-2xl font-bold tracking-tight text-gray-900 uppercase">
+                {cat.name}
+              </h2>
+              
+              <div className="grid gap-x-8 gap-y-10 sm:grid-cols-2">
+                {cat.items?.map((item: any) => (
+                  <div key={item.id} className="group">
+                    <div className="flex justify-between items-start gap-4">
+                      <h3 className="font-semibold text-lg text-gray-900 leading-tight">
+                        {item.name}
+                      </h3>
+                      <span className="font-medium text-gray-900 whitespace-nowrap">
+                        ${item.price}
+                      </span>
+                    </div>
+                    
+                    {item.description && (
+                      <p className="text-gray-500 text-sm mt-1.5 leading-relaxed pr-6">
+                        {item.description}
+                      </p>
+                    )}
                   </div>
-                  {item.description && <p className="text-gray-500 text-sm mt-2 leading-relaxed">{item.description}</p>}
-                </div>
-              ))}
+                ))}
+                
+                {(!cat.items || cat.items.length === 0) && (
+                  <div className="text-sm text-gray-400 italic">
+                    Items coming soon.
+                  </div>
+                )}
+              </div>
+            </section>
+          ))}
+          
+          {(!data.categories || data.categories.length === 0) && (
+            <div className="text-center py-20 text-gray-500 border border-dashed border-gray-200 rounded-2xl">
+              This menu is currently empty.
             </div>
-          </section>
-        ))}
+          )}
+        </div>
+        
+        <footer className="mt-20 pt-8 border-t border-gray-100 text-center text-xs text-gray-400">
+          Powered by the Platform
+        </footer>
       </main>
     </div>
   );
