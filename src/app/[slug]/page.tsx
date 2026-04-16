@@ -5,7 +5,8 @@ import { themes, ThemePreset } from "@/lib/themes";
 export default async function RestaurantMenuPage({ params }: { params: { slug: string } }) {
   const supabase = createClient();
   
-  const { data, error } = await supabase.rpc("get_restaurant_data", { lookup_slug: params.slug });
+  const decodedSlug = decodeURIComponent(params.slug);
+  const { data, error } = await supabase.rpc("get_restaurant_data", { lookup_slug: decodedSlug });
 
   if (error || !data) {
     return notFound();

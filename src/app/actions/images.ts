@@ -18,7 +18,7 @@ export async function uploadRestaurantImage(restaurantId: string, formData: Form
   const file = formData.get("file") as File;
   const isCover = formData.get("isCover") === "true";
 
-  if (!file) throw new Error("No file uploaded");
+  if (!file) return { error: "No file uploaded" };
 
   const fileExt = file.name.split(".").pop();
   const fileName = isCover ? `cover.${fileExt}` : `gallery/${Date.now()}.${fileExt}`;
@@ -32,11 +32,11 @@ export async function uploadRestaurantImage(restaurantId: string, formData: Form
     });
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath(`/ops/restaurants/${restaurantId}`);
-  return data;
+  return { data };
 }
 
 export async function deleteRestaurantImage(restaurantId: string, path: string) {
@@ -47,9 +47,49 @@ export async function deleteRestaurantImage(restaurantId: string, path: string) 
     .remove([path]);
 
   if (error) {
-    throw new Error(error.message);
+    return { error: error.message };
   }
 
   revalidatePath(`/ops/restaurants/${restaurantId}`);
-  return true;
+  return { success: true };
+}
+
+export async function uploadMenuItemImage(restaurantId: string, itemId: string, formData: FormData) {
+  const supabase = await verifyOpsAdmin();
+  const file = formData.get("file") as File;
+
+  if (!file) return { error: "No file uploaded" };
+
+  const fileExt = file.name.split(".").pop();
+  const filePath = `${restaurantId}/items/${itemId}-${Date.now()}.${fileExt}`;
+
+  // Upload to Supabase Storage
+  const { error: uploadError } = await supabase.storage
+    .from("restaurants")
+    .upload(filePath, file, {
+      upsert: true,
+      contentType: file.type,
+    });
+
+  if (uploadError) return { error: uploadError.message };
+
+  // Get the public URL
+  const { data: urlData } = supabase.storage
+    .from("restaurants")
+    .getPublicUrl(filePath);
+
+  // Update DB column
+  const { error: dbError } = await supabase
+    .from("menu_items")
+    .update({ image_url: urlData.publicUrl })
+    .eq("id", itemId);
+
+  if (dbError) return { error: dbError.message };
+
+  revalidatePath(`/ops/restaurants/${restaurantId}/menu`);
+  // also public path rendering
+  const { data: rest } = await supabase.from("restaurants").select("slug").eq("id", restaurantId).single();
+  if (rest) revalidatePath(`/${rest.slug}`);
+
+  return { success: true, url: urlData.publicUrl };
 }

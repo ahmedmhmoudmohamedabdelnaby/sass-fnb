@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 import { ChevronRight, Plus, Tags, GripVertical } from "lucide-react";
+import { ItemImageUploader } from "./item-image-uploader";
 
 export default async function OpsMenuEditorPage({
   params,
@@ -96,8 +97,11 @@ export default async function OpsMenuEditorPage({
                     .sort((a: any, b: any) => a.order_idx - b.order_idx)
                     .map((item: any) => (
                     <tr key={item.id} className="group hover:bg-gray-50/50 transition-colors">
-                      <td className="p-5 w-2/5">
-                        <div className="font-semibold text-gray-900">{item.name}</div>
+                      <td className="p-5 w-2/5 font-semibold text-gray-900">
+                        <div className="flex items-center gap-4">
+                          <ItemImageUploader restaurantId={restaurant.id} itemId={item.id} currentUrl={item.image_url} />
+                          <span>{item.name}</span>
+                        </div>
                       </td>
                       <td className="p-5 text-gray-500 text-sm max-w-sm truncate w-2/5">{item.description || <span className="italic text-gray-300">No description</span>}</td>
                       <td className="p-5 text-right font-semibold text-gray-900 w-1/5">${item.price}</td>

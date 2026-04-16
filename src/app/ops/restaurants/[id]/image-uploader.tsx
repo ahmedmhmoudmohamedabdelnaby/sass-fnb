@@ -25,9 +25,12 @@ export function ImageUploader({
     formData.append("isCover", isCover ? "true" : "false");
 
     try {
-      await uploadRestaurantImage(restaurantId, formData);
+      const res = await uploadRestaurantImage(restaurantId, formData);
+      if (res?.error) {
+        setError(res.error);
+      }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "An unexpected error occurred");
     } finally {
       setLoading(false);
       e.target.value = ""; // reset input
