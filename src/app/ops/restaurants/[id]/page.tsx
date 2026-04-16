@@ -84,6 +84,54 @@ export default async function OpsRestaurantDetailsPage({
                   Suspending blocks all public routing to <code className="bg-gray-100 px-1 py-0.5 rounded text-gray-700 font-mono">/{restaurant.slug}</code>.
                 </p>
               </div>
+              {/* Tagline */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Tagline</label>
+                <input 
+                  type="text" 
+                  name="tagline" 
+                  defaultValue={restaurant.tagline || ""} 
+                  placeholder="e.g. Seamless ordering experience"
+                  className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-black/5 focus:border-black outline-none transition-all"
+                />
+              </div>
+              {/* Currency */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Currency</label>
+                <input 
+                  type="text" 
+                  name="currency" 
+                  defaultValue={restaurant.currency || "EGP"} 
+                  placeholder="e.g. EGP, USD, SAR"
+                  className="w-full bg-gray-50 border border-gray-200 px-3 py-2 rounded-lg text-sm focus:bg-white focus:ring-2 focus:ring-black/5 focus:border-black outline-none transition-all"
+                />
+              </div>
+              {/* Order Types */}
+              <div>
+                <label className="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Enabled Order Types</label>
+                <div className="space-y-2">
+                  {[
+                    { value: "delivery", label: "🚗 Delivery" },
+                    { value: "dine_in", label: "🍽️ Dine In" },
+                    { value: "pickup", label: "🛍️ Pickup" },
+                  ].map((t) => (
+                    <label key={t.value} className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="order_types"
+                        value={t.value}
+                        defaultChecked={(restaurant.order_types_enabled || ["dine_in", "delivery", "pickup"]).includes(t.value)}
+                        className="rounded border-gray-300 text-black focus:ring-black/20"
+                      />
+                      {t.label}
+                    </label>
+                  ))}
+                </div>
+                <p className="text-[11px] text-gray-500 mt-2 leading-relaxed">
+                  Controls which fulfillment options customers see on the public menu.
+                </p>
+              </div>
+
               <div className="pt-2">
                 <button type="submit" className="w-full bg-black text-white px-4 py-2 rounded-lg font-medium text-sm shadow-sm hover:bg-gray-800 transition-colors">
                   Save Changes

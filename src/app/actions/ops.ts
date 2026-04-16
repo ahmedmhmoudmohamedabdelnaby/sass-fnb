@@ -36,12 +36,22 @@ export async function updateRestaurant(restaurantId: string, formData: FormData)
   const supabase = await verifyOpsAdmin();
   const name = formData.get("name") as string;
   const isActive = formData.get("is_active") === "true";
+  const tagline = formData.get("tagline") as string || null;
+  const currency = formData.get("currency") as string || "EGP";
+  const orderTypes = formData.getAll("order_types") as string[];
 
   if (!name) throw new Error("Name is required");
 
   const { error } = await supabase
     .from("restaurants")
-    .update({ name, is_active: isActive, updated_at: new Date().toISOString() })
+    .update({
+      name,
+      is_active: isActive,
+      tagline,
+      currency,
+      order_types_enabled: orderTypes.length > 0 ? orderTypes : ["dine_in", "delivery", "pickup"],
+      updated_at: new Date().toISOString(),
+    })
     .eq("id", restaurantId);
 
   if (error) throw new Error(error.message);
