@@ -11,18 +11,19 @@ export default async function RestaurantMenuPage({ params }: { params: { slug: s
     return notFound();
   }
 
-  // Check if there's a cover image in the public storage bucket
-  const { data: publicUrlData } = supabase.storage
-    .from("restaurants")
-    .getPublicUrl(`${data.id}/cover.jpg`); // Ext may vary, but let's assume getPublicUrl works if we pass the right path. Wait, actually we don't know the extension. Let's just list the files first to find the exact cover name.
-
   let coverUrl = null;
-  const { data: files } = await supabase.storage.from("restaurants").list(data.id);
-  if (files) {
-    const coverFile = files.find(f => f.name.startsWith("cover."));
-    if (coverFile) {
-      coverUrl = supabase.storage.from("restaurants").getPublicUrl(`${data.id}/${coverFile.name}`).data.publicUrl;
+  
+  try {
+    const { data: files, error: listError } = await supabase.storage.from("restaurants").list(data.id);
+    if (files && !listError) {
+      const coverFile = files.find(f => f.name.startsWith("cover."));
+      if (coverFile) {
+        coverUrl = supabase.storage.from("restaurants").getPublicUrl(`${data.id}/${coverFile.name}`).data.publicUrl;
+      }
     }
+  } catch (err) {
+    // Gracefully ignore missing bucket errors so the menu still renders
+    console.error("Storage error:", err);
   }
 
   const themeName = (data.theme_preset as ThemePreset) || "default";

@@ -24,18 +24,23 @@ export default async function OpsRestaurantDetailsPage({
 
   // Fetch images from bucket
   let images: { name: string, url: string }[] = [];
-  const { data: fileList } = await supabase.storage.from("restaurants").list(params.id);
   
-  if (fileList) {
-    images = fileList
-      .filter(f => f.name !== ".emptyFolderPlaceholder")
-      .map(file => {
-        const { data } = supabase.storage.from("restaurants").getPublicUrl(`${params.id}/${file.name}`);
-        return {
-          name: file.name,
-          url: data.publicUrl
-        };
-      });
+  try {
+    const { data: fileList, error: listError } = await supabase.storage.from("restaurants").list(params.id);
+    
+    if (fileList && !listError) {
+      images = fileList
+        .filter(f => f.name !== ".emptyFolderPlaceholder")
+        .map(file => {
+          const { data } = supabase.storage.from("restaurants").getPublicUrl(`${params.id}/${file.name}`);
+          return {
+            name: file.name,
+            url: data.publicUrl
+          };
+        });
+    }
+  } catch (err) {
+    console.error("Storage error:", err);
   }
 
   return (
